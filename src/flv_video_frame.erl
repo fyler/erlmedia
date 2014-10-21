@@ -32,6 +32,8 @@
 
 -export([is_good_flv/1]).
 
+is_good_flv(#video_frame{dts = N}) when not is_number(N) -> false;
+is_good_flv(#video_frame{pts = N}) when not is_number(N) -> false;
 is_good_flv(#video_frame{content = audio, sound = {_Channels, _Bits, Rate}}) when is_number(Rate) -> false;
 is_good_flv(#video_frame{content = audio, codec = Codec})
   when Codec == pcm orelse Codec == aac orelse Codec == mp3 orelse Codec == speex orelse Codec == nellymoser orelse Codec == nellymoser8 -> true;
