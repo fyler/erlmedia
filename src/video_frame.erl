@@ -108,6 +108,17 @@ define_media_info(#media_info{audio = A} = Media, #video_frame{codec = aac, flav
   },
   Media#media_info{audio = [Info]};
 
+define_media_info(#media_info{audio = [Info]} = Media, #video_frame{codec = aac, flavor = config, body = Body}) ->
+  #aac_config{channel_count = Channels, sample_rate = Rate} = aac:decode_config(Body),
+  Info1 = Info#stream_info{
+    content = audio,
+    codec = aac,
+    config = Body,
+    params = #audio_params{channels = Channels, sample_rate = Rate},
+    stream_id = stream_count(Media) + 1
+  },
+  Media#media_info{audio = [Info1]};
+
 define_media_info(#media_info{} = Media, #video_frame{codec = aac}) ->
   Media;
 
@@ -124,6 +135,20 @@ define_media_info(#media_info{video = V} = Media, #video_frame{codec = h264, fla
     stream_id = stream_count(Media) + 1
   },
   Media#media_info{video = [Info]};
+
+define_media_info(#media_info{video = [Info]} = Media, #video_frame{codec = h264, flavor = config, body = Body}) ->
+  Metadata = h264:metadata(Body),
+  Info1 = Info#stream_info{
+    content = video,
+    codec = h264,
+    config = Body,
+    params = #video_params{
+      width = proplists:get_value(width, Metadata),
+      height = proplists:get_value(height, Metadata)
+    },
+    stream_id = stream_count(Media) + 1
+  },
+  Media#media_info{video = [Info1]};
 
 define_media_info(#media_info{} = Media, #video_frame{codec = h264}) ->
   Media;
