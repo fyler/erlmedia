@@ -57,11 +57,15 @@ config_frame(_) ->
 
 config_frames(#media_info{audio = Audio, video = Video}) ->
   A =
-    if Audio == wait -> [];
-    true -> Audio,
+    if 
+      Audio == wait -> [];
+      true -> Audio
+    end,
   V = 
-    if Video == wait -> [];
-    true -> Video,
+    if 
+      Video == wait -> [];
+      true -> Video
+    end,
   Frames = [config_frame(S) || S <- A ++ V],
   [F || F <- Frames, F =/= undefined].
 
