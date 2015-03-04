@@ -55,7 +55,13 @@ config_frame(#stream_info{codec = h264, config = Config}) ->
 config_frame(_) ->
   undefined.
 
-config_frames(#media_info{audio = A, video = V}) ->
+config_frames(#media_info{audio = Audio, video = Video}) ->
+  A =
+    if Audio == wait -> [];
+    true -> Audio,
+  V = 
+    if Video == wait -> [];
+    true -> Video,
   Frames = [config_frame(S) || S <- A ++ V],
   [F || F <- Frames, F =/= undefined].
 
