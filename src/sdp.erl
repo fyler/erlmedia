@@ -294,7 +294,7 @@ encode(Session, MediaSeq) ->
 
 -spec make_session() -> string().
 make_session() ->
-  random:seed(now()),
+  random:seed(erlang:monotonic_time()),
   M = 100000000000000,
   integer_to_list(M+random:uniform(M)*5).
 
